@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewChild, TemplateRef } from '@angular/core';
 import { TreeviewI18n } from './treeview-i18n';
+import { TreeviewItem } from './treeview-item';
 import { TreeviewConfig } from './treeview-config';
 import { TreeviewComponent } from './treeview.component';
 import { DropdownDirective } from './dropdown.directive';
@@ -42,10 +43,17 @@ var DropdownTreeviewComponent = /** @class */ (function () {
         }
         this.selectItem.emit(item);
     };
+    DropdownTreeviewComponent.prototype.addNewRootItem = function () {
+        this.items.push(new TreeviewItem({
+            isEdit: true,
+            text: '',
+            value: ''
+        }));
+    };
     DropdownTreeviewComponent.decorators = [
         { type: Component, args: [{
                     selector: 'ngx-dropdown-treeview',
-                    template: "\n      <div class=\"dropdown\" ngxDropdown>\n        <button class=\"btn\" [ngClass]=\"buttonClass\" type=\"button\" role=\"button\" ngxDropdownToggle>\n          {{getText()}}\n        </button>\n        <div ngxDropdownMenu aria-labelledby=\"dropdownMenu\" (click)=\"$event.stopPropagation()\">\n          <div class=\"dropdown-container\">\n            <ngx-treeview [config]=\"config\" [headerTemplate]=\"headerTemplate\" [items]=\"items\" [itemTemplate]=\"itemTemplate\"\n              (selectedChange)=\"onSelectedChange($event)\"\n              (addNewItem)=\"onAddItem($event)\"\n              (selectItem)=\"onSelectItem($event)\"\n              (filterChange)=\"onFilterChange($event)\">\n            </ngx-treeview>\n          </div>\n        </div>\n      </div>\n    ",
+                    template: "\n      <div class=\"dropdown\" ngxDropdown>\n        <button class=\"btn\" [ngClass]=\"buttonClass\" type=\"button\" role=\"button\" ngxDropdownToggle>\n          {{getText()}}\n        </button>\n        <div ngxDropdownMenu aria-labelledby=\"dropdownMenu\" (click)=\"$event.stopPropagation()\">\n          <div class=\"dropdown-container\">\n            <ngx-treeview [config]=\"config\"\n              [headerTemplate]=\"headerTemplate\"\n              [items]=\"items\"\n              [itemTemplate]=\"itemTemplate\"\n              (selectedChange)=\"onSelectedChange($event)\"\n              (addNewItem)=\"onAddItem($event)\"\n              (selectItem)=\"onSelectItem($event)\"\n              (filterChange)=\"onFilterChange($event)\">\n            </ngx-treeview>\n            <i *ngIf=\"config.hasAdd\"\n              (click)=\"addNewRootItem()\" class=\"fa fa-plus\" aria-hidden=\"true\"></i>\n          </div>\n        </div>\n      </div>\n    ",
                     styles: ["\n      .dropdown {\n        width: 100%;\n        display: inline-block;\n      }\n\n      .dropdown button {\n        width: 100%;\n        margin-right: .9rem;\n        text-align: left;\n      }\n\n      .dropdown button::after {\n        position: absolute;\n        right: .6rem;\n        margin-top: .6rem;\n      }\n\n      .dropdown .dropdown-menu .dropdown-container {\n        padding: 0 .6rem;\n      }\n    "]
                 },] },
     ];

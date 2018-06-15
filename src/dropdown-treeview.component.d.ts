@@ -27,4 +27,5 @@ export declare class DropdownTreeviewComponent {
     onFilterChange(text: string): void;
     onAddItem(e: any): void;
     onSelectItem(item: TreeviewItem): void;
+    addNewRootItem(): void;
 }
