@@ -21,7 +21,7 @@ var DropdownTreeviewComponent = /** @class */ (function () {
                 return this._currentSelected.text;
             }
             else {
-                return this.items[0].text;
+                return 'Element not select';
             }
         }
         else {
@@ -44,11 +44,16 @@ var DropdownTreeviewComponent = /** @class */ (function () {
         this.selectItem.emit(item);
     };
     DropdownTreeviewComponent.prototype.addNewRootItem = function () {
-        this.items.push(new TreeviewItem({
+        var item = new TreeviewItem({
             isEdit: true,
             text: '',
             value: ''
-        }));
+        });
+        this.items.push(item);
+        this.onAddItem({
+            parent: null,
+            added: item
+        });
     };
     DropdownTreeviewComponent.decorators = [
         { type: Component, args: [{
