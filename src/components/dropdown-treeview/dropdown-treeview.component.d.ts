@@ -1,0 +1,31 @@
+import { EventEmitter, TemplateRef } from '@angular/core';
+import { TreeviewI18n } from '../../classes/treeview-i18n';
+import { TreeviewItem } from '../../classes/treeview-item';
+import { TreeviewConfig } from '../../classes/treeview-config';
+import { TreeviewComponent } from '../treeview/treeview.component';
+import { DropdownDirective } from '../../dirictives/dropdown.directive';
+import { TreeviewHeaderTemplateContext } from '../../interfaces/treeview-header-template-context';
+import { TreeviewItemTemplateContext } from '../../interfaces/treeview-item-template-context';
+export declare class DropdownTreeviewComponent {
+    i18n: TreeviewI18n;
+    private defaultConfig;
+    buttonClass: string;
+    headerTemplate: TemplateRef<TreeviewHeaderTemplateContext>;
+    itemTemplate: TemplateRef<TreeviewItemTemplateContext>;
+    items: TreeviewItem[];
+    config: TreeviewConfig;
+    selectedChange: EventEmitter<any[]>;
+    filterChange: EventEmitter<string>;
+    selectItem: EventEmitter<TreeviewItem>;
+    itemWasAdded: EventEmitter<any>;
+    treeviewComponent: TreeviewComponent;
+    dropdownDirective: DropdownDirective;
+    private _currentSelected;
+    constructor(i18n: TreeviewI18n, defaultConfig: TreeviewConfig);
+    getText(): string;
+    onSelectedChange(values: any[]): void;
+    onFilterChange(text: string): void;
+    onAddItem(e: any): void;
+    onSelectItem(item: TreeviewItem): void;
+    addNewRootItem(): void;
+}

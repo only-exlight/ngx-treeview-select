@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { DropdownDirective } from './dropdown.directive';
-import { DropdownMenuDirective } from './dropdown-menu.directive';
-import { DropdownToggleDirective } from './dropdown-toggle.directive';
-import { DropdownTreeviewComponent } from './dropdown-treeview.component';
-import { TreeviewComponent } from './treeview.component';
-import { TreeviewItemComponent } from './treeview-item.component';
-import { TreeviewPipe } from './treeview.pipe';
-import { TreeviewI18n, TreeviewI18nDefault } from './treeview-i18n';
-import { TreeviewConfig } from './treeview-config';
-import { TreeviewEventParser, DefaultTreeviewEventParser } from './treeview-event-parser';
+import { DropdownDirective } from './dirictives/dropdown.directive';
+import { DropdownMenuDirective } from './dirictives/dropdown-menu.directive';
+import { DropdownToggleDirective } from './dirictives/dropdown-toggle.directive';
+import { DropdownTreeviewComponent } from './components/dropdown-treeview/dropdown-treeview.component';
+import { TreeviewComponent } from './components/treeview/treeview.component';
+import { TreeviewItemComponent } from './components/treeview-item/treeview-item.component';
+import { TreeviewPipe } from './pipes/treeview.pipe';
+import { TreeviewI18n, TreeviewI18nDefault } from './classes/treeview-i18n';
+import { TreeviewConfig } from './classes/treeview-config';
+import { TreeviewEventParser, DefaultTreeviewEventParser } from './classes/treeview-event-parser';
 var TreeviewModule = /** @class */ (function () {
     function TreeviewModule() {
     }
