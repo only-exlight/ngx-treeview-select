@@ -37,16 +37,16 @@ var TreeviewI18nDefault = /** @class */ (function (_super) {
         }
     };
     TreeviewI18nDefault.prototype.getAllCheckboxText = function () {
-        return 'All';
+        return 'Все';
     };
     TreeviewI18nDefault.prototype.getFilterPlaceholder = function () {
-        return 'Filter';
+        return 'Фильтр';
     };
     TreeviewI18nDefault.prototype.getFilterNoItemsFoundText = function () {
-        return 'No items found';
+        return 'Не найдено';
     };
     TreeviewI18nDefault.prototype.getTooltipCollapseExpandText = function (isCollapse) {
-        return isCollapse ? 'Expand' : 'Collapse';
+        return isCollapse ? 'Равернуть' : 'Свернуть';
     };
     TreeviewI18nDefault.decorators = [
         { type: Injectable },
