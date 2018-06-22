@@ -21,7 +21,7 @@ var DropdownTreeviewComponent = /** @class */ (function () {
                 return this._currentSelected.text;
             }
             else {
-                return 'Element not select';
+                return 'Выберите положение';
             }
         }
         else {
