@@ -6,6 +6,7 @@ export declare class TreeviewConfig {
     hasCollapseExpand: boolean;
     decoupleChildFromParent: boolean;
     maxHeight: number;
+    maxWidth: number;
     readonly hasDivider: boolean;
     static create(fields?: {
         hasAdd?: boolean;
@@ -15,5 +16,6 @@ export declare class TreeviewConfig {
         hasCollapseExpand?: boolean;
         decoupleChildFromParent?: boolean;
         maxHeight?: number;
+        maxWidth?: number;
     }): TreeviewConfig;
 }

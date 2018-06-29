@@ -25,6 +25,7 @@ export declare class TreeviewComponent implements OnChanges {
     constructor(i18n: TreeviewI18n, defaultConfig: TreeviewConfig, eventParser: TreeviewEventParser);
     readonly hasFilterItems: boolean;
     readonly maxHeight: string;
+    readonly maxWidth: string;
     ngOnChanges(changes: SimpleChanges): void;
     onAllCollapseExpand(): void;
     onFilterTextChange(text: string): void;

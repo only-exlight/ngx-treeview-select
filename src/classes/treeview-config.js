@@ -8,6 +8,7 @@ var TreeviewConfig = /** @class */ (function () {
         this.hasCollapseExpand = false;
         this.decoupleChildFromParent = false;
         this.maxHeight = 500;
+        this.maxWidth = 240;
     }
     Object.defineProperty(TreeviewConfig.prototype, "hasDivider", {
         get: function () {
