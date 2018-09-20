@@ -18,6 +18,8 @@ export declare class DropdownTreeviewComponent {
     filterChange: EventEmitter<string>;
     selectItem: EventEmitter<TreeviewItem>;
     itemWasAdded: EventEmitter<any>;
+    itemWasDelete: EventEmitter<TreeviewItem>;
+    itemWasEdit: EventEmitter<TreeviewItem>;
     treeviewComponent: TreeviewComponent;
     dropdownDirective: DropdownDirective;
     private _currentSelected;
@@ -28,4 +30,6 @@ export declare class DropdownTreeviewComponent {
     onAddItem(e: any): void;
     onSelectItem(item: TreeviewItem): void;
     addNewRootItem(): void;
+    onDeletedItem(item: TreeviewItem): void;
+    onEditName(item: TreeviewItem): void;
 }
