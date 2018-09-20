@@ -129,9 +129,8 @@ var TreeviewComponent = /** @class */ (function () {
         this.selectedChange.emit(values);
     };
     TreeviewComponent.prototype.onSelectItem = function (item) {
-        // this.items.forEach((i) => i.selected = false);
-        item.selected = true;
         if (!item.children) {
+            item.selected = true;
             this.selectItem.emit(item);
         }
     };
