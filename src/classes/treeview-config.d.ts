@@ -1,4 +1,6 @@
 export declare class TreeviewConfig {
+    hasEdit: boolean;
+    hasDelete: boolean;
     hasAdd: boolean;
     hasCheckbox: boolean;
     hasAllCheckBox: boolean;

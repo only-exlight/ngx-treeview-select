@@ -13,6 +13,8 @@ var DropdownTreeviewComponent = /** @class */ (function () {
         this.filterChange = new EventEmitter();
         this.selectItem = new EventEmitter();
         this.itemWasAdded = new EventEmitter();
+        this.itemWasDelete = new EventEmitter();
+        this.itemWasEdit = new EventEmitter();
         this.config = this.defaultConfig;
     }
     DropdownTreeviewComponent.prototype.getText = function () {
@@ -54,10 +56,30 @@ var DropdownTreeviewComponent = /** @class */ (function () {
         });
         this.items.push(item);
     };
+    DropdownTreeviewComponent.prototype.onDeletedItem = function (item) {
+        if (item.isRootItem) {
+            var filtredItems = this.items.filter(function (el) { return el.value !== item.value; });
+            this.items = filtredItems;
+        }
+        else {
+            var filtredChildrens = item.parent.children
+                .filter(function (el) { return el.value !== item.value; });
+            if (filtredChildrens.length) {
+                item.parent.children = filtredChildrens;
+            }
+            else {
+                item.parent.children = null;
+            }
+        }
+        this.itemWasDelete.emit(item);
+    };
+    DropdownTreeviewComponent.prototype.onEditName = function (item) {
+        this.itemWasEdit.emit(item);
+    };
     DropdownTreeviewComponent.decorators = [
         { type: Component, args: [{
                     selector: 'ngx-dropdown-treeview',
-                    template: "\n      <div class=\"dropdown\" ngxDropdown>\n        <button class=\"btn\" [ngClass]=\"buttonClass\" type=\"button\" role=\"button\" ngxDropdownToggle>\n          {{getText()}}\n        </button>\n        <div ngxDropdownMenu aria-labelledby=\"dropdownMenu\" (click)=\"$event.stopPropagation()\">\n          <div class=\"dropdown-container\">\n            <ngx-treeview [config]=\"config\"\n              [headerTemplate]=\"headerTemplate\"\n              [items]=\"items\"\n              [itemTemplate]=\"itemTemplate\"\n              (selectedChange)=\"onSelectedChange($event)\"\n              (addNewItem)=\"onAddItem($event)\"\n              (selectItem)=\"onSelectItem($event)\"\n              (filterChange)=\"onFilterChange($event)\">\n            </ngx-treeview>\n            <i *ngIf=\"config.hasAdd\"\n              (click)=\"addNewRootItem()\" class=\"fa fa-plus\" aria-hidden=\"true\"></i>\n          </div>\n        </div>\n      </div>\n    ",
+                    template: "\n      <div class=\"dropdown\" ngxDropdown>\n        <button class=\"btn\" [ngClass]=\"buttonClass\" type=\"button\" role=\"button\" ngxDropdownToggle>\n          {{getText()}}\n        </button>\n        <div ngxDropdownMenu aria-labelledby=\"dropdownMenu\" (click)=\"$event.stopPropagation()\">\n          <div class=\"dropdown-container\">\n            <ngx-treeview [config]=\"config\"\n              [headerTemplate]=\"headerTemplate\"\n              [items]=\"items\"\n              [itemTemplate]=\"itemTemplate\"\n              (selectedChange)=\"onSelectedChange($event)\"\n              (addNewItem)=\"onAddItem($event)\"\n              (deletedItem)=\"onDeletedItem($event)\"\n              (editItemName)=\"onEditName($event)\"\n              (selectItem)=\"onSelectItem($event)\"\n              (filterChange)=\"onFilterChange($event)\">\n            </ngx-treeview>\n            <i *ngIf=\"config.hasAdd\"\n              (click)=\"addNewRootItem()\" class=\"fa fa-plus\" aria-hidden=\"true\"></i>\n          </div>\n        </div>\n      </div>\n    ",
                     styles: ["\n      .dropdown {\n        width: 100%;\n        display: inline-block;\n      }\n\n      .dropdown button {\n        width: 100%;\n        margin-right: .9rem;\n        text-align: left;\n      }\n\n      .dropdown button::after {\n        position: absolute;\n        right: .6rem;\n        margin-top: .6rem;\n      }\n\n      .dropdown .dropdown-menu .dropdown-container {\n        padding: 0 .6rem;\n      }\n    "]
                 },] },
     ];
@@ -76,6 +98,8 @@ var DropdownTreeviewComponent = /** @class */ (function () {
         filterChange: [{ type: Output }],
         selectItem: [{ type: Output }],
         itemWasAdded: [{ type: Output }],
+        itemWasDelete: [{ type: Output }],
+        itemWasEdit: [{ type: Output }],
         treeviewComponent: [{ type: ViewChild, args: [TreeviewComponent,] }],
         dropdownDirective: [{ type: ViewChild, args: [DropdownDirective,] }]
     };

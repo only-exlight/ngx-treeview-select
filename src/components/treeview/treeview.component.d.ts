@@ -16,7 +16,9 @@ export declare class TreeviewComponent implements OnChanges {
     selectedChange: EventEmitter<any[]>;
     filterChange: EventEmitter<string>;
     addNewItem: EventEmitter<any>;
+    editItemName: EventEmitter<TreeviewItem>;
     selectItem: EventEmitter<TreeviewItem>;
+    deletedItem: EventEmitter<TreeviewItem>;
     headerTemplateContext: TreeviewHeaderTemplateContext;
     allItem: TreeviewItem;
     filterText: string;
@@ -33,9 +35,15 @@ export declare class TreeviewComponent implements OnChanges {
     onItemCheckedChange(item: TreeviewItem, checked: boolean): void;
     raiseSelectedChange(): void;
     onSelectItem(item: TreeviewItem): void;
-    endAddItem(item: TreeviewItem): void;
-    cancelAddItem(item: TreeviewItem): void;
+    endEdit(item: TreeviewItem): void;
+    onEndEdit(item: TreeviewItem): void;
+    onEndAddItem(item: TreeviewItem): void;
+    enterNameItem(e: KeyboardEvent, item: TreeviewItem): void;
+    cancelEdit(item: TreeviewItem): void;
+    onCancelEdit(item: TreeviewItem): void;
     onAddNewItem(item: TreeviewItem): void;
+    deleteItem(item: TreeviewItem): void;
+    editItem(item: TreeviewItem): void;
     private createHeaderTemplateContext();
     private generateSelection();
     private updateFilterItems();
