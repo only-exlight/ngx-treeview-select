@@ -12,7 +12,7 @@ export interface DownlineTreeviewItem {
 }
 export declare class DownlineTreeviewEventParser extends TreeviewEventParser {
     getSelectedChange(component: TreeviewComponent): any[];
-    private getLinks(item, parent);
+    private getLinks;
 }
 export declare class OrderDownlineTreeviewEventParser extends TreeviewEventParser {
     private currentDownlines;

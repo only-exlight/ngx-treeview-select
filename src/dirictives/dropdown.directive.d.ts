@@ -9,5 +9,5 @@ export declare class DropdownDirective {
     open(): void;
     close(): void;
     toggle(): void;
-    private isEventFromToggle(event);
+    private isEventFromToggle;
 }

@@ -23,6 +23,7 @@ export declare class TreeviewItem {
     private isRoot;
     private internalChildren;
     private internalSelected;
+    private internalActive;
     editText: string;
     text: string;
     value: any;
@@ -38,9 +39,13 @@ export declare class TreeviewItem {
     setCollapsedRecursive(value: boolean): void;
     children: TreeviewItem[];
     selected: boolean;
+    active: boolean;
     getSelection(): TreeviewSelection;
     correctChecked(): void;
     addChildItem(): void;
-    private getCorrectChecked();
-    private dropSelection();
+    getBrother(step: -1 | 1): TreeviewItem;
+    getParent(step: -1 | 1): TreeviewItem;
+    private _getNeighbour;
+    private getCorrectChecked;
+    private dropSelection;
 }

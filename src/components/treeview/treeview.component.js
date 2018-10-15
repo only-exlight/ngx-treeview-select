@@ -129,6 +129,11 @@ var TreeviewComponent = /** @class */ (function () {
         this.selectedChange.emit(values);
     };
     TreeviewComponent.prototype.onSelectItem = function (item) {
+        if (this.activeItem) {
+            this.activeItem.active = false;
+        }
+        this.activeItem = item;
+        this.activeItem.active = true;
         if (!item.children) {
             item.selected = true;
             this.selectItem.emit(item);
@@ -177,6 +182,53 @@ var TreeviewComponent = /** @class */ (function () {
     TreeviewComponent.prototype.editItem = function (item) {
         item.edit = true;
         item.editText = item.text;
+    };
+    TreeviewComponent.prototype.onKeyUp = function () {
+        this.fixActive();
+        this.activeItem.active = false;
+        var bro = this.activeItem.getBrother(-1);
+        if (bro) {
+            this.activeItem = bro;
+        }
+        this.activeItem.active = true;
+    };
+    TreeviewComponent.prototype.onKeyDn = function () {
+        this.fixActive();
+        this.activeItem.active = false;
+        var bro = this.activeItem.getBrother(1);
+        if (bro) {
+            this.activeItem = bro;
+        }
+        this.activeItem.active = true;
+    };
+    TreeviewComponent.prototype.onKeySelect = function () {
+        var bro = this.activeItem;
+        if (bro.active) {
+            this.onSelectItem(bro);
+        }
+    };
+    TreeviewComponent.prototype.onKeyLeft = function () {
+        this.fixActive();
+        this.activeItem.active = false;
+        var bro = this.activeItem.getParent(-1);
+        if (bro) {
+            this.activeItem = bro;
+        }
+        this.activeItem.active = true;
+    };
+    TreeviewComponent.prototype.onKeyRight = function () {
+        this.fixActive();
+        this.activeItem.active = false;
+        var bro = this.activeItem.getParent(1);
+        if (bro) {
+            this.activeItem = bro;
+        }
+        this.activeItem.active = true;
+    };
+    TreeviewComponent.prototype.fixActive = function () {
+        if (!this.activeItem) {
+            this.activeItem = this.items[0];
+        }
     };
     TreeviewComponent.prototype.createHeaderTemplateContext = function () {
         var _this = this;
@@ -275,8 +327,8 @@ var TreeviewComponent = /** @class */ (function () {
     TreeviewComponent.decorators = [
         { type: Component, args: [{
                     selector: 'ngx-treeview',
-                    template: "\n    <ng-template #defaultItemTemplate let-item=\"item\" let-onCollapseExpand=\"onCollapseExpand\" let-onCheckedChange=\"onCheckedChange\">\n      <div class=\"form-inline row-item\">\n        <i *ngIf=\"item.children\" (click)=\"onCollapseExpand()\" aria-hidden=\"true\" class=\"fa\" [class.fa-caret-right]=\"item.collapsed\"\n          [class.fa-caret-down]=\"!item.collapsed\"></i>\n        <div class=\"form-check\">\n          <input *ngIf=\"config.hasCheckbox\" type=\"checkbox\" class=\"form-check-input\" [(ngModel)]=\"item.checked\" (ngModelChange)=\"onCheckedChange()\" [disabled]=\"item.disabled\"\n            [indeterminate]=\"item.indeterminate\" />\n          <label *ngIf=\"config.hasCheckbox\" class=\"form-check-label\" (click)=\"item.checked = !item.checked; onCheckedChange()\">\n            {{item.text}}\n          </label>\n          <div class=\"input-container\">\n            <input *ngIf=\"item.edit\" type=\"text\" class=\"form-control\"\n              (keyup)=\"enterNameItem($event, item)\"\n              [(ngModel)]=\"item.editText\">\n            <i *ngIf=\"item.edit\" (click)=\"endEdit(item)\" class=\"fa fa-check\"></i>\n            <i *ngIf=\"item.edit\" (click)=\"cancelEdit(item)\" class=\"fa fa-times\"></i>\n          </div>\n          <span class=\"item-name\" *ngIf=\"!config.hasCheckbox && !item.edit\" (click)=\"onSelectItem(item)\"  [ngClass]=\"{'treeview-item-selected': item.selected}\">\n            {{item.text}}\n          </span>\n          <i *ngIf=\"config.hasAdd && !item.edit\" (click)=\"onAddNewItem(item)\" class=\"fa fa-plus\" aria-hidden=\"true\"></i>\n          <i *ngIf=\"config.hasEdit && !item.edit\" (click)=\"editItem(item)\" class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n          <i *ngIf=\"config.hasDelete && !item.edit\" (click)=\"deleteItem(item)\" class=\"fa fa-trash\" aria-hidden=\"true\"></i>\n        </div>\n      </div>\n    </ng-template>\n\n    <ng-template #defaultHeaderTemplate let-config=\"config\" let-item=\"item\" let-onCollapseExpand=\"onCollapseExpand\" let-onCheckedChange=\"onCheckedChange\"\n      let-onFilterTextChange=\"onFilterTextChange\">\n      <div *ngIf=\"config.hasFilter\" class=\"row row-filter\">\n        <div class=\"col-12\">\n          <input class=\"form-control\" type=\"text\" [placeholder]=\"i18n.getFilterPlaceholder()\" [(ngModel)]=\"filterText\" (ngModelChange)=\"onFilterTextChange($event)\"\n          />\n        </div>\n      </div>\n      <div *ngIf=\"hasFilterItems\">\n        <div *ngIf=\"config.hasAllCheckBox || config.hasCollapseExpand\" class=\"row row-all\">\n          <div class=\"col-12\">\n            <div class=\"form-check\">\n              <input *ngIf=\"config.hasCheckbox\" type=\"checkbox\" class=\"form-check-input\" [(ngModel)]=\"item.checked\" (ngModelChange)=\"onCheckedChange()\" [indeterminate]=\"item.indeterminate\"\n              />\n              <label *ngIf=\"config.hasAllCheckBox && config.hasCheckbox\" class=\"form-check-label\" (click)=\"item.checked = !item.checked; onCheckedChange()\">\n                {{i18n.getAllCheckboxText()}}\n              </label>\n              <span *ngIf=\"!config.hasCheckbox && !item.edit\">{{i18n.getAllCheckboxText()}}</span>\n              <label *ngIf=\"config.hasCollapseExpand\" class=\"pull-right form-check-label\" (click)=\"onCollapseExpand()\">\n                <i [title]=\"i18n.getTooltipCollapseExpandText(item.collapsed)\" aria-hidden=\"true\" class=\"fa\" [class.fa-expand]=\"item.collapsed\"\n                  [class.fa-compress]=\"!item.collapsed\"></i>\n              </label>\n            </div>\n          </div>\n        </div>\n        <div *ngIf=\"config.hasDivider\" class=\"dropdown-divider\"></div>\n      </div>\n    </ng-template>\n\n    <div class=\"treeview-header\">\n      <ng-template [ngTemplateOutlet]=\"headerTemplate || defaultHeaderTemplate\" [ngTemplateOutletContext]=\"headerTemplateContext\">\n      </ng-template>\n    </div>\n    <div [ngSwitch]=\"hasFilterItems\">\n      <div *ngSwitchCase=\"true\" class=\"treeview-container\" [style.max-height.px]=\"maxHeight\" [style.max-width.px]=\"maxWidth\">\n        <ngx-treeview-item *ngFor=\"let item of filterItems\" [config]=\"config\" [item]=\"item\" [template]=\"itemTemplate || defaultItemTemplate\"\n          (checkedChange)=\"onItemCheckedChange(item, $event)\">\n        </ngx-treeview-item>\n      </div>\n      <div *ngSwitchCase=\"false\" class=\"treeview-text\">\n        {{i18n.getFilterNoItemsFoundText()}}\n      </div>\n    </div>\n  ",
-                    styles: ["\n    :host /deep/ .treeview-header .row-filter {\n      margin-bottom: .5rem;\n    }\n\n    :host /deep/ .treeview-header .row-all .fa {\n      cursor: pointer;\n    }\n\n    :host /deep/ .treeview-container .row-item {\n      margin-bottom: .3rem;\n      flex-wrap: nowrap;\n    }\n\n    :host /deep/ .treeview-container .row-item .input-container {\n      position: relative;\n    }\n\n    :host /deep/ .treeview-container .row-item .input-container .fa-check {\n      position: absolute;\n      right: 30px;\n      top: 10px;\n    }\n\n    :host /deep/ .treeview-container .row-item .input-container .fa-times {\n      position: absolute;\n      top: 10px;\n      right: 5px;\n    }\n\n    :host /deep/ .treeview-container .row-item .fa {\n      width: .8rem;\n      cursor: pointer;\n      margin-right: .3rem;\n    }\n\n    :host /deep/ .treeview-container .row-item .item-name {\n      cursor: pointer;\n    }\n\n    :host /deep/ .treeview-container .row-item .item-name.treeview-item-selected {\n      font-weight: bold;\n    }\n\n    :host /deep/ .treeview-container .row-item .fa-plus {\n      margin-left: .3rem;\n    }\n\n    .treeview-container {\n      overflow-y: auto;\n      padding-right: .3rem;\n    }\n\n    .treeview-text {\n      padding: .3rem 0;\n      white-space: nowrap;\n    }\n  "]
+                    template: "\n    <ng-template #defaultItemTemplate let-item=\"item\" let-onCollapseExpand=\"onCollapseExpand\" let-onCheckedChange=\"onCheckedChange\">\n      <div class=\"form-inline row-item\">\n        <i *ngIf=\"item.children\" (click)=\"onCollapseExpand()\" aria-hidden=\"true\" class=\"fa\" [class.fa-caret-right]=\"item.collapsed\"\n          [class.fa-caret-down]=\"!item.collapsed\"></i>\n        <div class=\"form-check\">\n          <input *ngIf=\"config.hasCheckbox\" type=\"checkbox\" class=\"form-check-input\" [(ngModel)]=\"item.checked\" (ngModelChange)=\"onCheckedChange()\" [disabled]=\"item.disabled\"\n            [indeterminate]=\"item.indeterminate\" />\n          <label *ngIf=\"config.hasCheckbox\" class=\"form-check-label\" (click)=\"item.checked = !item.checked; onCheckedChange()\">\n            {{item.text}}\n          </label>\n          <div class=\"input-container\">\n            <input *ngIf=\"item.edit\" type=\"text\" class=\"form-control\"\n              (keyup)=\"enterNameItem($event, item)\"\n              [(ngModel)]=\"item.editText\">\n            <i *ngIf=\"item.edit\" (click)=\"endEdit(item)\" class=\"fa fa-check\"></i>\n            <i *ngIf=\"item.edit\" (click)=\"cancelEdit(item)\" class=\"fa fa-times\"></i>\n          </div>\n          <span class=\"item-name\" *ngIf=\"!config.hasCheckbox && !item.edit\" (click)=\"onSelectItem(item)\"  [ngClass]=\"{'treeview-item-selected': item.selected, 'treeview-item-active': item.active}\">\n            {{item.text}}\n          </span>\n          <i *ngIf=\"config.hasAdd && !item.edit\" (click)=\"onAddNewItem(item)\" class=\"fa fa-plus\" aria-hidden=\"true\"></i>\n          <i *ngIf=\"config.hasEdit && !item.edit\" (click)=\"editItem(item)\" class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n          <i *ngIf=\"config.hasDelete && !item.edit\" (click)=\"deleteItem(item)\" class=\"fa fa-trash\" aria-hidden=\"true\"></i>\n        </div>\n      </div>\n    </ng-template>\n\n    <ng-template #defaultHeaderTemplate let-config=\"config\" let-item=\"item\" let-onCollapseExpand=\"onCollapseExpand\" let-onCheckedChange=\"onCheckedChange\"\n      let-onFilterTextChange=\"onFilterTextChange\">\n      <div *ngIf=\"config.hasFilter\" class=\"row row-filter\">\n        <div class=\"col-12\">\n          <input class=\"form-control\" type=\"text\" [placeholder]=\"i18n.getFilterPlaceholder()\" [(ngModel)]=\"filterText\" (ngModelChange)=\"onFilterTextChange($event)\"\n          />\n        </div>\n      </div>\n      <div *ngIf=\"hasFilterItems\">\n        <div *ngIf=\"config.hasAllCheckBox || config.hasCollapseExpand\" class=\"row row-all\">\n          <div class=\"col-12\">\n            <div class=\"form-check\">\n              <input *ngIf=\"config.hasCheckbox\" type=\"checkbox\" class=\"form-check-input\" [(ngModel)]=\"item.checked\" (ngModelChange)=\"onCheckedChange()\" [indeterminate]=\"item.indeterminate\"\n              />\n              <label *ngIf=\"config.hasAllCheckBox && config.hasCheckbox\" class=\"form-check-label\" (click)=\"item.checked = !item.checked; onCheckedChange()\">\n                {{i18n.getAllCheckboxText()}}\n              </label>\n              <span *ngIf=\"!config.hasCheckbox && !item.edit\">{{i18n.getAllCheckboxText()}}</span>\n              <label *ngIf=\"config.hasCollapseExpand\" class=\"pull-right form-check-label\" (click)=\"onCollapseExpand()\">\n                <i [title]=\"i18n.getTooltipCollapseExpandText(item.collapsed)\" aria-hidden=\"true\" class=\"fa\" [class.fa-expand]=\"item.collapsed\"\n                  [class.fa-compress]=\"!item.collapsed\"></i>\n              </label>\n            </div>\n          </div>\n        </div>\n        <div *ngIf=\"config.hasDivider\" class=\"dropdown-divider\"></div>\n      </div>\n    </ng-template>\n\n    <div class=\"treeview-header\">\n      <ng-template [ngTemplateOutlet]=\"headerTemplate || defaultHeaderTemplate\" [ngTemplateOutletContext]=\"headerTemplateContext\">\n      </ng-template>\n    </div>\n    <div [ngSwitch]=\"hasFilterItems\">\n      <div *ngSwitchCase=\"true\" class=\"treeview-container\" [style.max-height.px]=\"maxHeight\" [style.max-width.px]=\"maxWidth\">\n        <ngx-treeview-item *ngFor=\"let item of filterItems\" [config]=\"config\" [item]=\"item\" [template]=\"itemTemplate || defaultItemTemplate\"\n          (checkedChange)=\"onItemCheckedChange(item, $event)\">\n        </ngx-treeview-item>\n      </div>\n      <div *ngSwitchCase=\"false\" class=\"treeview-text\">\n        {{i18n.getFilterNoItemsFoundText()}}\n      </div>\n    </div>\n  ",
+                    styles: ["\n    :host /deep/ .treeview-header .row-filter {\n      margin-bottom: .5rem;\n    }\n\n    :host /deep/ .treeview-header .row-all .fa {\n      cursor: pointer;\n    }\n\n    :host /deep/ .treeview-container .row-item {\n      margin-bottom: .3rem;\n      flex-wrap: nowrap;\n    }\n\n    :host /deep/ .treeview-container .row-item .input-container {\n      position: relative;\n    }\n\n    :host /deep/ .treeview-container .row-item .input-container .fa-check {\n      position: absolute;\n      right: 30px;\n      top: 10px;\n    }\n\n    :host /deep/ .treeview-container .row-item .input-container .fa-times {\n      position: absolute;\n      top: 10px;\n      right: 5px;\n    }\n\n    :host /deep/ .treeview-container .row-item .fa {\n      width: .8rem;\n      cursor: pointer;\n      margin-right: .3rem;\n    }\n\n    :host /deep/ .treeview-container .row-item .item-name {\n      cursor: pointer;\n    }\n\n    :host /deep/ .treeview-container .row-item .item-name.treeview-item-selected {\n      font-weight: bold;\n    }\n\n    :host /deep/ .treeview-container .row-item .item-name.treeview-item-active {\n      background-color: #007bff;\n    }\n\n    :host /deep/ .treeview-container .row-item .fa-plus {\n      margin-left: .3rem;\n    }\n\n    .treeview-container {\n      overflow-y: auto;\n      padding-right: .3rem;\n    }\n\n    .treeview-text {\n      padding: .3rem 0;\n      white-space: nowrap;\n    }\n  "]
                 },] },
     ];
     /** @nocollapse */
