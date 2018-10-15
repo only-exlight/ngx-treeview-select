@@ -13,6 +13,7 @@ var TreeviewItem = /** @class */ (function () {
         this.internalCreated = true;
         this.isRoot = false;
         this.internalSelected = false;
+        this.internalActive = false;
         if (isNil(item)) {
             throw new Error('Item must be defined');
         }
@@ -189,6 +190,16 @@ var TreeviewItem = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(TreeviewItem.prototype, "active", {
+        get: function () {
+            return this.internalActive;
+        },
+        set: function (val) {
+            this.internalActive = val;
+        },
+        enumerable: true,
+        configurable: true
+    });
     TreeviewItem.prototype.getSelection = function () {
         var checkedItems = [];
         var uncheckedItems = [];
@@ -230,6 +241,32 @@ var TreeviewItem = /** @class */ (function () {
         else {
             this.internalChildren = [];
             this.internalChildren.push(newItem);
+        }
+    };
+    TreeviewItem.prototype.getBrother = function (step) {
+        if (this.parent) {
+            return this._getNeighbour(step, this.parent.children);
+        }
+        else {
+            return this._getNeighbour(step, roots);
+        }
+    };
+    TreeviewItem.prototype.getParent = function (step) {
+        if (step === 1) {
+            return this.children && this.children[0];
+        }
+        else {
+            return this.parent;
+        }
+    };
+    TreeviewItem.prototype._getNeighbour = function (step, items) {
+        var _this = this;
+        if (items) {
+            var myIdx_1 = items.findIndex(function (item) { return item === _this; });
+            return items.find(function (_item, idx) { return idx - step === myIdx_1; });
+        }
+        else {
+            return null;
         }
     };
     TreeviewItem.prototype.getCorrectChecked = function () {

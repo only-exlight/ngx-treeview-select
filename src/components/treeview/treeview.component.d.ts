@@ -24,6 +24,7 @@ export declare class TreeviewComponent implements OnChanges {
     filterText: string;
     filterItems: TreeviewItem[];
     selection: TreeviewSelection;
+    private activeItem;
     constructor(i18n: TreeviewI18n, defaultConfig: TreeviewConfig, eventParser: TreeviewEventParser);
     readonly hasFilterItems: boolean;
     readonly maxHeight: string;
@@ -44,10 +45,16 @@ export declare class TreeviewComponent implements OnChanges {
     onAddNewItem(item: TreeviewItem): void;
     deleteItem(item: TreeviewItem): void;
     editItem(item: TreeviewItem): void;
-    private createHeaderTemplateContext();
-    private generateSelection();
-    private updateFilterItems();
-    private filterItem(item, filterText);
-    private updateCheckedOfAll();
-    private updateCollapsedOfAll();
+    onKeyUp(): void;
+    onKeyDn(): void;
+    onKeySelect(): void;
+    onKeyLeft(): void;
+    onKeyRight(): void;
+    private fixActive;
+    private createHeaderTemplateContext;
+    private generateSelection;
+    private updateFilterItems;
+    private filterItem;
+    private updateCheckedOfAll;
+    private updateCollapsedOfAll;
 }
