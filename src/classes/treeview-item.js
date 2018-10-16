@@ -55,7 +55,9 @@ var TreeviewItem = /** @class */ (function () {
             this.parent = item.parent;
         }
         else {
-            roots.push(this);
+            if (this.value) {
+                roots.push(this);
+            }
         }
     }
     Object.defineProperty(TreeviewItem.prototype, "checked", {
