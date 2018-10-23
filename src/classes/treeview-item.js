@@ -1,6 +1,5 @@
 import { isBoolean, isNil, isString } from 'lodash';
 import { TreeviewHelper } from './treeview-helper';
-var roots = [];
 var TreeviewItem = /** @class */ (function () {
     function TreeviewItem(item, autoCorrectChecked) {
         if (autoCorrectChecked === void 0) { autoCorrectChecked = false; }
@@ -53,11 +52,6 @@ var TreeviewItem = /** @class */ (function () {
         }
         if (item.parent) {
             this.parent = item.parent;
-        }
-        else {
-            if (this.value) {
-                roots.push(this);
-            }
         }
     }
     Object.defineProperty(TreeviewItem.prototype, "checked", {
@@ -249,16 +243,13 @@ var TreeviewItem = /** @class */ (function () {
         if (this.parent) {
             return this._getNeighbour(step, this.parent.children);
         }
-        else {
-            return this._getNeighbour(step, roots);
-        }
     };
     TreeviewItem.prototype.getParent = function (step) {
         if (step === 1) {
             return this.children && this.children[0];
         }
         else {
-            return this.parent;
+            return this.parent.value ? this.parent : null;
         }
     };
     TreeviewItem.prototype._getNeighbour = function (step, items) {
@@ -299,8 +290,10 @@ var TreeviewItem = /** @class */ (function () {
                 item.internalChildren.forEach(function (chld) { return subDrop(chld); });
             }
         };
+        while (rootNode.parent) {
+            rootNode = rootNode.parent;
+        }
         subDrop(rootNode);
-        roots.forEach(function (root) { return subDrop(root); });
     };
     return TreeviewItem;
 }());

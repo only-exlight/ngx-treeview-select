@@ -61,7 +61,7 @@ var TreeviewComponent = /** @class */ (function () {
         this.deletedItem = new EventEmitter();
         this.filterText = '';
         this.config = this.defaultConfig;
-        this.allItem = new TreeviewItem({ text: 'All', value: undefined });
+        // this.allItem = new TreeviewItem({ text: 'All', value: undefined });
         this.createHeaderTemplateContext();
     }
     Object.defineProperty(TreeviewComponent.prototype, "hasFilterItems", {
@@ -86,12 +86,16 @@ var TreeviewComponent = /** @class */ (function () {
         configurable: true
     });
     TreeviewComponent.prototype.ngOnChanges = function (changes) {
+        var _this = this;
         var itemsSimpleChange = changes['items'];
         if (!isNil(itemsSimpleChange)) {
+            this.allItem = new TreeviewItem({ text: 'All', value: null, children: [] });
             if (!isNil(this.items)) {
                 this.updateFilterItems();
                 this.updateCollapsedOfAll();
                 this.raiseSelectedChange();
+                this.allItem.children = this.items;
+                this.items.forEach(function (item) { return item.parent = _this.allItem; });
             }
         }
         this.createHeaderTemplateContext();
@@ -184,11 +188,21 @@ var TreeviewComponent = /** @class */ (function () {
         item.editText = item.text;
     };
     TreeviewComponent.prototype.onKeyUp = function () {
+        var _this = this;
         this.fixActive();
         this.activeItem.active = false;
-        var bro = this.activeItem.getBrother(-1);
-        if (bro) {
-            this.activeItem = bro;
+        if (this.activeItem.parent) {
+            var bro = this.activeItem.getBrother(-1);
+            if (bro) {
+                this.activeItem = bro;
+            }
+        }
+        else {
+            var idx = this.items.findIndex(function (item) { return item.value === _this.activeItem.value; }) - 1;
+            if (idx < 0) {
+                idx = 0;
+            }
+            this.activeItem = this.items[idx];
         }
         this.activeItem.active = true;
     };
